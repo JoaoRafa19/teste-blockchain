@@ -3,7 +3,7 @@
 
 
 ## Todo
-- [ ] Server
+- [X] Server
 - [ ] Transport => tcp, udp, 
 - [ ] Block
 - [ ] Transaction
