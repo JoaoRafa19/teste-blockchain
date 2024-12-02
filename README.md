@@ -4,7 +4,8 @@ Generic propose blockchain for uses like office files, criptocurrency
 
 
 
-## Todo
+## Features
+
 - [-] Server
 - [X] Block
     - [X] Block's hash
@@ -15,7 +16,10 @@ Generic propose blockchain for uses like office files, criptocurrency
 - [ ] Key
 - [X] Transport => tcp, udp, 
     - [X] Local transport layer
+- [ ] Crypto Keypairs and signature
 
+## Todos
+Improvements and fixes that can be implemented
 
 ## Types 
 
