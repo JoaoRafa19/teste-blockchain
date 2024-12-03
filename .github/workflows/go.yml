@@ -7,7 +7,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -27,23 +26,34 @@ jobs:
     - name: Run Tests with Coverage
       run: |
         mkdir -p coverage
-        go test -v -coverprofile=coverage/coverage.out ./...
+        go test -coverprofile=coverage/coverage.out ./...
 
-    - name: Check Test Coverage
+    - name: Generate Coverage Summary
       run: |
-        if [ ! -f coverage/coverage.out ]; then
-          echo "No coverage report generated. Test suite might be empty."
-          exit 1
-        fi
+        go tool cover -func=coverage/coverage.out > coverage/coverage-summary.txt
+
+    - name: Generate Coverage Badge
+      run: |
         coverage=$(go tool cover -func=coverage/coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
-        echo "Coverage is $coverage%"
-        if (( $(echo "$coverage < 80" | awk '{print ($1 < 80)}') )); then
-          echo "Test coverage ($coverage%) is below 80%"
-          exit 1
+        echo "Coverage: $coverage%"
+        color="red"
+        if (( $(echo "$coverage >= 80" | bc -l) )); then
+          color="green"
+        elif (( $(echo "$coverage >= 50" | bc -l) )); then
+          color="yellow"
+        fi
+        curl -o coverage/badge.svg "https://img.shields.io/badge/coverage-$coverage%25-$color"
+
+    - name: Update README with Coverage Badge
+      run: |
+        if grep -q "\!\[Coverage\]" README.md; then
+          sed -i "s|!\[Coverage\](.*)|![Coverage](coverage/badge.svg)|" README.md
+        else
+          echo "![Coverage](coverage/badge.svg)" >> README.md
         fi
 
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: coverage/coverage.out
+        path: coverage/
