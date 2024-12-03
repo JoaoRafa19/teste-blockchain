@@ -16,7 +16,10 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.22'
+        go-version: '1.21'
+
+    - name: Install Dependencies
+      run: go mod tidy
 
     - name: Build
       run: go build -v ./...
@@ -28,9 +31,19 @@ jobs:
 
     - name: Check Test Coverage
       run: |
+        if [ ! -f coverage/coverage.out ]; then
+          echo "No coverage report generated. Test suite might be empty."
+          exit 1
+        fi
         coverage=$(go tool cover -func=coverage/coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
         echo "Coverage is $coverage%"
-        if (( $(echo "$coverage < 80" | bc -l) )); then
+        if (( $(echo "$coverage < 80" | awk '{print ($1 < 80)}') )); then
           echo "Test coverage ($coverage%) is below 80%"
           exit 1
         fi
+
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage/coverage.out
