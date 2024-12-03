@@ -2,7 +2,7 @@
 
 Generic propose blockchain for uses like office files, criptocurrency
 
-[![.github/workflows/go.yml](https://github.com/JoaoRafa19/crypto-go/actions/workflows/go.yml/badge.svg)](https://github.com/JoaoRafa19/crypto-go/actions/workflows/go.yml)
+[![.github/workflows/go.yml](https://github.com/JoaoRafa19/crypto-go/actions/workflows/go.yml/badge.svg?branch=main&event=push)](https://github.com/JoaoRafa19/crypto-go/actions/workflows/go.yml)
 
 
 ## Features
