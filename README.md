@@ -2,7 +2,9 @@
 
 Generic propose blockchain for uses like office files, criptocurrency
 
+**Test Coverage**
 
+![Coverage](coverage/badge.svg)
 
 ## Features
 
