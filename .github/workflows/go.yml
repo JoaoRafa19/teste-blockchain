@@ -44,14 +44,6 @@ jobs:
         fi
         curl -o coverage/badge.svg "https://img.shields.io/badge/coverage-$coverage%25-$color"
 
-    - name: Update README with Coverage Badge
-      run: |
-        if grep -q "\!\[Coverage\]" README.md; then
-          sed -i "s|!\[Coverage\](.*)|![Coverage](coverage/badge.svg)|" README.md
-        else
-          echo "![Coverage](coverage/badge.svg)" >> README.md
-        fi
-
     - name: Commit and Push Changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
