@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/JoaoRafa19/teste-blockchain/types"
+	"github.com/JoaoRafa19/crypto-go/types"
 )
 
 // To save space we just hash the header

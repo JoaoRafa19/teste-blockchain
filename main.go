@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/JoaoRafa19/teste-blockchain/network"
+	"github.com/JoaoRafa19/crypto-go/network"
 )
 
 func main() {

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JoaoRafa19/teste-blockchain/types"
+	"github.com/JoaoRafa19/crypto-go/types"
 	"github.com/stretchr/testify/assert"
 )
 

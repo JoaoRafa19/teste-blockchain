@@ -1,4 +1,4 @@
-module github.com/JoaoRafa19/teste-blockchain
+module github.com/JoaoRafa19/crypto-go
 
 go 1.22.5
 
