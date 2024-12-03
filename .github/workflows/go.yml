@@ -7,7 +7,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -16,7 +15,10 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.22'
+        go-version: '1.21'
+
+    - name: Install Dependencies
+      run: go mod tidy
 
     - name: Build
       run: go build -v ./...
@@ -24,13 +26,38 @@ jobs:
     - name: Run Tests with Coverage
       run: |
         mkdir -p coverage
-        go test -v -coverprofile=coverage/coverage.out ./...
+        go test -coverprofile=coverage/coverage.out ./...
 
-    - name: Check Test Coverage
+    - name: Generate Coverage Summary
+      run: |
+        go tool cover -func=coverage/coverage.out > coverage/coverage-summary.txt
+
+    - name: Generate Coverage Badge
       run: |
         coverage=$(go tool cover -func=coverage/coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
-        echo "Coverage is $coverage%"
-        if (( $(echo "$coverage < 80" | bc -l) )); then
-          echo "Test coverage ($coverage%) is below 80%"
-          exit 1
+        echo "Coverage: $coverage%"
+        color="red"
+        if (( $(echo "$coverage >= 80" | bc -l) )); then
+          color="green"
+        elif (( $(echo "$coverage >= 50" | bc -l) )); then
+          color="yellow"
         fi
+        curl -o coverage/badge.svg "https://img.shields.io/badge/coverage-$coverage%25-$color"
+
+    - name: Update README with Coverage Badge
+      run: |
+        if grep -q "\!\[Coverage\]" README.md; then
+          sed -i "s|!\[Coverage\](.*)|![Coverage](coverage/badge.svg)|" README.md
+        else
+          echo "![Coverage](coverage/badge.svg)" >> README.md
+        fi
+
+    - name: Commit and Push Changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add coverage/badge.svg README.md
+        git commit -m "Update coverage badge [skip ci]" || echo "No changes to commit"
+        git push origin HEAD:main

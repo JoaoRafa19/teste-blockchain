@@ -2,8 +2,13 @@
 
 Generic propose blockchain for uses like office files, criptocurrency
 
+<<<<<<< HEAD
 [![.github/workflows/go.yml](https://github.com/JoaoRafa19/crypto-go/actions/workflows/go.yml/badge.svg?branch=main&event=push)](https://github.com/JoaoRafa19/crypto-go/actions/workflows/go.yml)
+=======
+**Test Coverage**
+>>>>>>> e5c1088b60bba29a7e25ab3aa2d85b0dee27178d
 
+![Coverage](coverage/badge.svg)
 
 ## Features
 
@@ -28,6 +33,7 @@ Improvements and fixes that can be implemented
 
 ```go
 type Hash [32]uint8
+<<<<<<< HEAD
 ```
 
 ### Mistakes to remember 
@@ -58,3 +64,6 @@ func (tx Transaction) Sign(privKey crypto.PrivateKey) error {
  ```go
 func (tx *Transaction) Sign(privKey crypto.PrivateKey) error {
 ````
+=======
+```![Coverage](coverage/badge.svg)
+>>>>>>> e5c1088b60bba29a7e25ab3aa2d85b0dee27178d
