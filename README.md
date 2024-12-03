@@ -27,4 +27,4 @@ Improvements and fixes that can be implemented
 
 ```go
 type Hash [32]uint8
-```
+```![Coverage](coverage/badge.svg)
