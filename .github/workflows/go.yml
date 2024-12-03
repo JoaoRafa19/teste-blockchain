@@ -21,33 +21,16 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-    - name: Run Test
+    - name: Run Tests with Coverage
       run: |
-        go test -v ./... -covermode=count -coverprofile=coverage.out
-        go tool cover -func=coverage.out -o=coverage.out
+        mkdir -p coverage
+        go test -v -coverprofile=coverage/coverage.out ./...
 
-    - name: Go Coverage Badge  # Pass the `coverage.out` output to this action
-      uses: tj-actions/coverage-badge-go@v2
-      with:
-        filename: coverage.out
-
-    - name: Verify Changed files
-      uses: tj-actions/verify-changed-files@v16
-      id: verify-changed-files
-      with:
-        files: README.md
-
-    - name: Commit changes
-      if: steps.verify-changed-files.outputs.files_changed == 'true'
+    - name: Check Test Coverage
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add README.md
-        git commit -m "chore: Updated coverage badge."
-
-    - name: Push changes
-      if: steps.verify-changed-files.outputs.files_changed == 'true'
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ github.token }}
-        branch: ${{ github.head_ref }}
+        coverage=$(go tool cover -func=coverage/coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
+        echo "Coverage is $coverage%"
+        if (( $(echo "$coverage < 80" | bc -l) )); then
+          echo "Test coverage ($coverage%) is below 80%"
+          exit 1
+        fi
