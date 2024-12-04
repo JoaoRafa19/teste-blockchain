@@ -8,7 +8,7 @@ Generic propose blockchain for uses like office files, criptocurrency
 
 ## Features
 
-- [-] Server
+- [ ] Server
 - [X] Block
     - [X] Block's hash
     - [x] Test
@@ -16,12 +16,18 @@ Generic propose blockchain for uses like office files, criptocurrency
     - [x] Transaction list Hash
     - [x] Test
 - [ ] Key
-- [X] Transport => tcp, udp, 
+- [ ] Transport => tcp, udp, 
     - [X] Local transport layer
-- [ ] Crypto Keypairs and signature
+- [X] Crypto Keypairs and signature
+- [X] Block Signing
+- [X] Blockchain struct
+- [ ] Storage (not memory storage)
+
 
 ## Todos
 Improvements and fixes that can be implemented
+
+- [ ] Add a database or a better storage method to store transactions and block data
 
 ## Types 
 
@@ -29,6 +35,7 @@ Improvements and fixes that can be implemented
 
 ```go
 type Hash [32]uint8
+type Address [20]uint8
 ```
 
 ### Mistakes to remember 
