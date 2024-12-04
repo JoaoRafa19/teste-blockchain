@@ -38,6 +38,7 @@ jobs:
         echo "Coverage: $coverage%"
         
         color="red"
+        echo "https://img.shields.io/badge/coverage-$coverage%25-$color"
         curl -o coverage/badge.svg "https://img.shields.io/badge/coverage-$coverage%25-$color"
         if  (( $(echo "$coverage < 80" | bc -l) )); then
           exit 1
