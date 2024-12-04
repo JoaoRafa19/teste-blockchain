@@ -1,10 +1,10 @@
-name: Go
+name: BuildAndTest
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+
 
 jobs:
   build:
@@ -48,6 +48,25 @@ jobs:
         elif (( $(echo "$coverage >= 50" | bc -l) )); then
           color="yellow"
         fi
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2.3.0
+      with:
+        github-token: ${{ secrets.github_token }}
+        file: coverage/coverage.out
+        format: golang
+        outfile: coverage/coverage.lcov
+    - name: TraceFile
+      run: |
+        sudo apt-get install -y lcov
+        lcov --add-tracefile ./coverage/coverage.lcov -o ./coverage.info
+    
+    - name: Report Coverage
+      uses: zgosalvez/github-actions-report-lcov@v1
+      with:
+        coverage-files: coverage/coverage.info
+        minimun-coverage: 80
+        artifact-name: code-coverage-report
+        
 
     - name: Commit and Push Changes
       if: always()

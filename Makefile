@@ -5,8 +5,11 @@ build:
 run: build
 	./bin/projectx
 
+tests:
+	go test -v ./...
+
 test:
-	go test -v 	./...
+	go test ./...
 
 all: run
 	echo "Hello"
@@ -18,13 +21,13 @@ test_coverage:
 cover: test_coverage
 	@go tool cover -func=coverage/coverage.out > coverage/coverage-summary.txt
 
-__coverage: _coverage	
+clean_sumary: print_coverage	
 	@rm ./coverage/coverage-summary.txt 
 
-coverage: __coverage
+coverage: clean_sumary
 	@rm ./coverage/coverage.out
 
-_coverage: cover
+print_coverage: cover
 	@coverage=$$(go tool cover -func=coverage/coverage.out | grep total | awk '{print substr($$3, 1, length($$3)-1)}'); \
 	echo "Test coverage: $$coverage%" \
 

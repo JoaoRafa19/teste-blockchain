@@ -12,11 +12,19 @@ import (
 
 // To save space we just hash the header
 type Header struct {
-	Version      uint32
-	PrevBlocHash types.Hash
-	Timestamp    uint64
-	Height       uint32
-	DataHash     uint32
+	Version       uint32
+	PrevBlockHash types.Hash
+	Timestamp     uint64
+	Height        uint32
+	DataHash      uint32
+}
+
+func (h *Header) Bytes() []byte {
+	buf := &bytes.Buffer{}
+
+	enc := gob.NewEncoder(buf)
+	enc.Encode(h)
+	return buf.Bytes()
 }
 
 // Hold the transactions and the header information
@@ -42,14 +50,14 @@ func (b *Block) Verify() error {
 		return fmt.Errorf("block has no signature")
 	}
 
-	if !b.Signature.Verify(b.Validator, b.HeaderData()) {
+	if !b.Signature.Verify(b.Validator, b.Header.Bytes()) {
 		return fmt.Errorf("block has invalid signature")
 	}
 	return nil
 }
 
 func (b *Block) Sign(privKey crypto.PrivateKey) error {
-	sig, err := privKey.Sign(b.HeaderData())
+	sig, err := privKey.Sign(b.Header.Bytes())
 	if err != nil {
 		return err
 	}
@@ -66,18 +74,10 @@ func (b *Block) Encode(w io.Writer, enc Encoder[*Block]) error {
 	return enc.Encode(w, b)
 }
 
-func (b *Block) Hash(hasher Hasher[*Block]) types.Hash {
+func (b *Block) Hash(hasher Hasher[*Header]) types.Hash {
 	if b.hash.IsZero() {
-		b.hash = hasher.Hash(b)
+		b.hash = hasher.Hash(b.Header)
 	}
 
 	return b.hash
-}
-
-func (b *Block) HeaderData() []byte {
-	buf := &bytes.Buffer{}
-
-	enc := gob.NewEncoder(buf)
-	enc.Encode(b.Header)
-	return buf.Bytes()
 }
