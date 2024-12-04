@@ -50,17 +50,20 @@ jobs:
         fi
     - name: Coveralls
       uses: coverallsapp/github-action@v2.3.0
+      if: always()
       with:
         github-token: ${{ secrets.github_token }}
         file: coverage/coverage.out
         format: golang
         outfile: coverage/coverage.lcov
     - name: TraceFile
+      if: always()
       run: |
         sudo apt-get install -y lcov
         lcov --add-tracefile ./coverage/coverage.lcov -o ./coverage.info
     
     - name: Report Coverage
+      if: always()
       uses: zgosalvez/github-actions-report-lcov@v1
       with:
         coverage-files: coverage/coverage.info
