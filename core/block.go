@@ -45,6 +45,10 @@ func NewBlock(h *Header, tsc []Transaction) *Block {
 	}
 }
 
+func (b *Block) AddTransaction(tx *Transaction) {
+	b.Transactions = append(b.Transactions, *tx)
+}
+
 func (b *Block) Verify() error {
 	if b.Signature == nil {
 		return fmt.Errorf("block has no signature")
@@ -53,6 +57,13 @@ func (b *Block) Verify() error {
 	if !b.Signature.Verify(b.Validator, b.Header.Bytes()) {
 		return fmt.Errorf("block has invalid signature")
 	}
+
+	for _, trx := range b.Transactions {
+		if err := trx.Verify(); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
