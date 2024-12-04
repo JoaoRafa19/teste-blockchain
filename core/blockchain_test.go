@@ -20,6 +20,7 @@ func TestNewBlockChain(t *testing.T) {
 func TestHasBlock(t *testing.T) {
 	bc := newBlockChainWithGenesis(t)
 	assert.True(t, bc.HasBlock(0))
+	assert.False(t, bc.HasBlock(100))
 }
 func TestAddBlock(t *testing.T) {
 	bc := newBlockChainWithGenesis(t)
@@ -38,6 +39,7 @@ func TestAddBlock(t *testing.T) {
 
 func TestAddBlockToHigh(t *testing.T) {
 	bc := newBlockChainWithGenesis(t)
+	assert.Nil(t, bc.AddBlock(randomBlockWithSignature(t, 1, getPrevBlockHash(t, bc, uint32(1)))))
 	assert.NotNil(t, bc.AddBlock(randomBlockWithSignature(t, 3, types.Hash{})))
 }
 
