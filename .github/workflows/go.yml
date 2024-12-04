@@ -66,7 +66,7 @@ jobs:
         coverage-files: coverage/coverage.info
         minimun-coverage: 80
         artifact-name: code-coverage-report
-        
+
 
     - name: Commit and Push Changes
       if: always()
@@ -77,5 +77,5 @@ jobs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add coverage/badge.svg README.md
         git commit -m "Update coverage badge [skip ci]" || echo "No changes to commit"
-        git pull origin main
-        git push origin HEAD:main
+        git pull origin ${{ github.ref_name }}
+        git push origin HEAD:${{ github.ref_name }}
