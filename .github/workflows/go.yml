@@ -36,6 +36,7 @@ jobs:
       run: |
         coverage=$(go tool cover -func=coverage/coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
         echo "Coverage: $coverage%"
+        curl -o coverage/badge.svg "https://img.shields.io/badge/coverage-$coverage%25-$color"
         if  (( $(echo "$coverage < 80" | bc -l) )); then
           exit 1
         fi
@@ -45,7 +46,6 @@ jobs:
         elif (( $(echo "$coverage >= 50" | bc -l) )); then
           color="yellow"
         fi
-        curl -o coverage/badge.svg "https://img.shields.io/badge/coverage-$coverage%25-$color"
 
     - name: Commit and Push Changes
       env:
