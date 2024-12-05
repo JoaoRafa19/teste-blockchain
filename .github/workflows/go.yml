@@ -51,23 +51,29 @@ jobs:
     - name: Install lcov
       run: sudo apt-get install -y lcov
 
-    - name: Convert Coverage to lcov Format
+    - name: Convert Coverage.out to LCOV
       run: |
-        genhtml coverage/coverage.out --output-directory coverage/
-        mv coverage/index.html coverage/coverage.lcov
+        go install github.com/matm/gocov2lcov@latest
+        gocov2lcov < coverage/coverage.out > coverage/coverage.lcov
+
+    - name: Generate Coverage HTML Report
+      run: |
+        genhtml coverage/coverage.lcov --output-directory coverage-html
 
     - name: Coveralls
       uses: coverallsapp/github-action@v2.3.0
+      if: always()
       with:
         github-token: ${{ secrets.github_token }}
-        file: coverage/coverage.out
-        format: golang
+        file: coverage/coverage.lcov
+        format: lcov
 
     - name: Combine Coverage Files
       run: |
-        lcov --add-tracefile ./coverage/coverage.lcov -o ./coverage/combined.info
+        lcov --add-tracefile coverage/coverage.lcov -o coverage/combined.info
 
     - name: Report Coverage
+      if: always()
       uses: zgosalvez/github-actions-report-lcov@v1
       with:
         coverage-files: coverage/combined.info
