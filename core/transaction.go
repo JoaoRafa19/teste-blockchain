@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/JoaoRafa19/crypto-go/crypto"
+	"github.com/JoaoRafa19/crypto-go/types"
 )
 
 type Transaction struct {
@@ -11,6 +12,9 @@ type Transaction struct {
 
 	From      crypto.PublicKey
 	Signature *crypto.Signature
+
+	//cached version of tx data hash
+	hash types.Hash
 }
 
 func (tx *Transaction) Sign(privKey crypto.PrivateKey) error {
@@ -22,6 +26,19 @@ func (tx *Transaction) Sign(privKey crypto.PrivateKey) error {
 	tx.From = privKey.PublicKey()
 	tx.Signature = sig
 	return nil
+}
+
+func NewTransaction(data []byte) *Transaction {
+	return &Transaction{
+		Data: data,
+	}
+}
+
+func (tx *Transaction) Hash(h Hasher[*Transaction]) types.Hash {
+	if tx.hash.IsZero() {
+		tx.hash = h.Hash(tx)
+	}
+	return h.Hash(tx)
 }
 
 func (tx *Transaction) Verify() error {

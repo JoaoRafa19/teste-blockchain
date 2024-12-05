@@ -34,6 +34,7 @@ type Block struct {
 	Validator    crypto.PublicKey
 	Signature    *crypto.Signature
 
+	//nonce uint32
 	// cached version of the header hash
 	hash types.Hash
 }
