@@ -4,13 +4,17 @@ import (
 	"fmt"
 
 	"github.com/JoaoRafa19/crypto-go/crypto"
+	"github.com/JoaoRafa19/crypto-go/types"
 )
 
 type Transaction struct {
 	Data []byte
 
-	PublicKey crypto.PublicKey
+	From      crypto.PublicKey
 	Signature *crypto.Signature
+
+	//cached version of tx data hash
+	hash types.Hash
 }
 
 func (tx *Transaction) Sign(privKey crypto.PrivateKey) error {
@@ -19,9 +23,22 @@ func (tx *Transaction) Sign(privKey crypto.PrivateKey) error {
 		return err
 	}
 
-	tx.PublicKey = privKey.PublicKey()
+	tx.From = privKey.PublicKey()
 	tx.Signature = sig
 	return nil
+}
+
+func NewTransaction(data []byte) *Transaction {
+	return &Transaction{
+		Data: data,
+	}
+}
+
+func (tx *Transaction) Hash(h Hasher[*Transaction]) types.Hash {
+	if tx.hash.IsZero() {
+		tx.hash = h.Hash(tx)
+	}
+	return h.Hash(tx)
 }
 
 func (tx *Transaction) Verify() error {
@@ -29,7 +46,7 @@ func (tx *Transaction) Verify() error {
 		return fmt.Errorf("transaction has no signature")
 	}
 
-	if !tx.Signature.Verify(tx.PublicKey, tx.Data) {
+	if !tx.Signature.Verify(tx.From, tx.Data) {
 		return fmt.Errorf("invalid transaction signature")
 	}
 
