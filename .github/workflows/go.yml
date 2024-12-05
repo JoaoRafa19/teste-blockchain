@@ -53,7 +53,7 @@ jobs:
 
     - name: Convert Coverage to lcov Format
       run: |
-        genhtml -o coverage coverage/coverage.out
+        genhtml coverage/coverage.out --output-directory coverage/
         mv coverage/index.html coverage/coverage.lcov
 
     - name: Coveralls
@@ -81,7 +81,9 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git pull origin ${{ github.ref_name }}
+        git fetch origin
+        git checkout ${{ github.head_ref || github.ref_name }}
+        git pull origin ${{ github.head_ref || github.ref_name }}
         git add coverage/badge.svg
         git commit -m "Update coverage badge [skip ci]" || echo "No changes to commit"
-        git push origin HEAD:${{ github.ref_name }}
+        git push origin HEAD:${{ github.head_ref || github.ref_name }}
